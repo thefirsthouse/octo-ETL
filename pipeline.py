@@ -16,5 +16,5 @@ def run_pipeline(input_path: str, output_path: str):
     print("Aggregating data...")
     data = steps.aggregate(data)
     print("Loading data...")
-    data = steps.load(data, output_path)
+    steps.load(data, output_path)
     print("Pipeline completed.")
