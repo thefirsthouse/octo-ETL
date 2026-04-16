@@ -1,6 +1,6 @@
 import pandas
 
-from . import steps
+import steps
 
 
 def run_pipeline(input_path: str, output_path: str):
