@@ -32,9 +32,29 @@ def clean(data: pd.DataFrame):
 
     data = data.drop_duplicates()
 
-    data = data[data["price"] > 0 & (data["quantity"] > 0)]
+    data = data[(data["price"] > 0) & (data["quantity"] > 0)]
 
     data["date"] = pd.to_datetime(data["date"], errors="coerce")
     data = data.dropna(subset=["date"])
 
     return data
+
+
+def transform(data: pd.DataFrame):
+    """Add new total column"""
+
+    data['total'] = data['price'] * data['quantity']
+    return data
+
+
+def aggregate(data: pd.DataFrame):
+    """Generates statistics for each user"""
+
+    result = (
+        data.groupby("user_id")["total"]
+        .sum()
+        .reset_index()
+    )
+
+    result = result.rename(columns={"total": "total_spent"})
+    return result
