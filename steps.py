@@ -1,4 +1,5 @@
 import pandas as pd
+import sqlite3
 
 from config import REQUIRED_COLUMNS
 
@@ -51,15 +52,20 @@ def transform(data: pd.DataFrame):
 
 
 def aggregate(data: pd.DataFrame):
-    """Generates statistics for each user"""
+    """Aggegate data using SQLite"""
 
-    result = (
-        data.groupby("user_id")["total"]
-        .sum()
-        .reset_index()
-    )
+    conn = sqlite3.connect(':memory:')
+    data.to_sql('orders', conn, index=False, if_exists='replace')
+    query = """
+    SELECT
+        user_id,
+        SUM(total) AS total_spent
+    FROM orders
+    GROUP BY user_id"""
 
-    result = result.rename(columns={"total": "total_spent"})
+    result = pd.read_sql(query, conn)
+    conn.close()
+
     return result
 
 
