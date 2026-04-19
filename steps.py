@@ -1,5 +1,7 @@
 import pandas as pd
 
+from config import REQUIRED_COLUMNS
+
 
 def extract(file_path: str) -> pd.DataFrame:
     """Extract data from a CSV file and return it as a DataFrame."""
@@ -17,7 +19,7 @@ def validate(data: pd.DataFrame) -> pd.DataFrame:
     if data.empty:
         raise ValueError("Input data is empty. Cannot validate.")
     
-    required_columns = {'user_id', 'product', 'price'}
+    required_columns = REQUIRED_COLUMNS
     missing_columns = required_columns - set(data.columns)
     if missing_columns:
         raise ValueError(f"Missing required columns: {missing_columns}")
@@ -34,6 +36,7 @@ def clean(data: pd.DataFrame):
 
     data = data[(data["price"] > 0) & (data["quantity"] > 0)]
 
+    data = data.copy()
     data["date"] = pd.to_datetime(data["date"], errors="coerce")
     data = data.dropna(subset=["date"])
 
