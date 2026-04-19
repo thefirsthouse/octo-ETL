@@ -36,6 +36,7 @@ def clean(data: pd.DataFrame):
 
     data = data[(data["price"] > 0) & (data["quantity"] > 0)]
 
+    data = data.copy()
     data["date"] = pd.to_datetime(data["date"], errors="coerce")
     data = data.dropna(subset=["date"])
 
