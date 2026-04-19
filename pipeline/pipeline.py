@@ -1,4 +1,5 @@
 from utils.logger import get_logger
+
 from etl.extract import extract
 from etl.validate import validate
 from etl.clean import clean
@@ -10,17 +11,32 @@ logger = get_logger(__name__)
 
 
 def run_pipeline(input_path: str, output_path: str):
-    logger.info("Running pipeline...")
-    logger.info("Extracting data...")
-    data = extract(input_path)
-    logger.info("Validating data...")
-    data = validate(data)
-    logger.info("Cleaning data...")
-    data = clean(data)
-    logger.info("Transforming data...")
-    data = transform(data)
-    logger.info("Aggregating data...")
-    data = aggregate(data)
-    logger.info("Loading data...")
-    load(data, output_path)
-    logger.info("Pipeline completed.")
+    logger.info("Starting ETL pipeline")
+
+    try:
+        logger.info("Step: Extract")
+        data = extract(input_path)
+
+        logger.info("Step: Validate")
+        data = validate(data)
+
+        logger.info("Step: Clean")
+        logger.info(f"Rows before cleaning: {len(data)}")
+        data = clean(data)
+        logger.info(f"Rows after cleaning: {len(data)}")
+
+        logger.info("Step: Transform")
+        data = transform(data)
+
+        logger.info("Step: Aggregate")
+        data = aggregate(data)
+        logger.info(f"Total rows: {len(data)}")
+
+        logger.info("Step: Load")
+        load(data, output_path)
+
+    except Exception as e:
+        logger.exception(f"Pipeline failed: {e}")
+        raise
+
+    logger.info("Pipeline completed successfully")
