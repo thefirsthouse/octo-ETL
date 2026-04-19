@@ -1,6 +1,6 @@
 import argparse
 
-from pipeline import run_pipeline
+from pipeline.pipeline import run_pipeline
 
 
 def parse_args():
